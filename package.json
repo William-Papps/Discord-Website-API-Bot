@@ -1,0 +1,24 @@
+{
+  "name": "discord-website-api-bot",
+  "version": "1.0.0",
+  "description": "Discord BOT attached to a Website using ExpressJS API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/William-Papps/Discord-Website-API-Bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/William-Papps/Discord-Website-API-Bot/issues"
+  },
+  "homepage": "https://github.com/William-Papps/Discord-Website-API-Bot#readme",
+  "dependencies": {
+    "discord.js": "^14.27.0"
+  }
+}
