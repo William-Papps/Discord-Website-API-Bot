@@ -1,11 +1,14 @@
 const express = require("express");
 
+const cors = require("cors");
+
 const commandSettings = require("../config/commandSettings");
 
 const registerCommands = require("../bot/commands/registerCommands");
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/commands/dice", async (req, res) => {
@@ -25,11 +28,11 @@ app.post("/api/commands/dice", async (req, res) => {
 
   commandSettings.dice = enabled;
 
-  await registerCommands();
-
   res.json({
     enabled: commandSettings.dice,
   });
+
+  registerCommands().catch(console.error);
 });
 
 app.listen(3000, () => {
