@@ -14,7 +14,7 @@ app.get("/api/commands/dice", async (req, res) => {
   });
 });
 
-app.post("/api/command/dice", async (req, res) => {
+app.post("/api/commands/dice", async (req, res) => {
   const enabled = req.body.enabled;
 
   if (typeof enabled !== "boolean") {
