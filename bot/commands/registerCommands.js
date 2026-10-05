@@ -1,8 +1,13 @@
 require("dotenv").config();
 
-const { SlashCommandBuilder, REST, Routes } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  REST,
+  Routes,
+  CommandInteractionOptionResolver,
+} = require("discord.js");
 
-const commandSettings = require("../../config/commandSettings");
+const db = require("../../database/db");
 
 const helloCommand = new SlashCommandBuilder()
   .setName("hello")
@@ -23,12 +28,39 @@ const diceCommand = new SlashCommandBuilder()
       .setRequired(true),
   );
 
+const renameCommand = new SlashCommandBuilder()
+  .setName("rename-channel")
+  .setDescription(
+    "Reads the selected channel and new name, then calls your rename function.",
+  )
+  .addChannelOption((option) =>
+    option
+      .setName("channel")
+      .setDescription("Select the channel to rename")
+      .setRequired(true),
+  )
+  .addStringOption((option) =>
+    option
+      .setName("name")
+      .setDescription("New Name for Channel")
+      .setRequired(true),
+  );
+
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
-function getCommands() {
-  const commands = [helloCommand.toJSON(), aboutCommand.toJSON()];
+async function getCommands() {
+  const commands = [
+    helloCommand.toJSON(),
+    aboutCommand.toJSON(),
+    renameCommand.toJSON(),
+  ];
 
-  if (commandSettings.dice) {
+  const [rows] = await db.execute(
+    "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name = ?",
+    [process.env.GUILD_ID, "dice"],
+  );
+
+  if (rows.length > 0 && rows[0].enabled === 1) {
     commands.push(diceCommand.toJSON());
   }
 
@@ -42,7 +74,7 @@ async function registerCommands() {
       process.env.GUILD_ID,
     ),
     {
-      body: getCommands(),
+      body: await getCommands(),
     },
   );
 

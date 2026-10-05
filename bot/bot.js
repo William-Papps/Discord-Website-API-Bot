@@ -1,8 +1,15 @@
 require("dotenv").config();
 
-const { Client, Events, GatewayIntentBits } = require("discord.js");
+const {
+  Client,
+  Events,
+  GatewayIntentBits,
+  InteractionType,
+} = require("discord.js");
 
 const registerCommands = require("./commands/registerCommands");
+const diceCommand = require("./commands/dice");
+const renameCommand = require("./commands/rename");
 
 const bot = new Client({
   intents: [
@@ -11,14 +18,6 @@ const bot = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
-
-function rollDice(sides) {
-  if (!Number.isInteger(sides) || sides < 2) {
-    return null;
-  }
-
-  return Math.floor(Math.random() * sides) + 1;
-}
 
 registerCommands();
 
@@ -34,10 +33,9 @@ bot.on(Events.InteractionCreate, async (interaction) => {
   } else if (interaction.commandName === "about") {
     await interaction.reply("About");
   } else if (interaction.commandName === "dice") {
-    const sides = interaction.options.getInteger("sides");
-    const number = rollDice(sides);
-
-    await interaction.reply(`You rolled a ${number}`);
+    await diceCommand(interaction);
+  } else if (interaction.commandName === "rename-channel") {
+    await renameCommand(interaction);
   }
 });
 

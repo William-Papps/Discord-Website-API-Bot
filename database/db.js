@@ -9,11 +9,3 @@ const db = mysql.createPool({
 });
 
 module.exports = db;
-
-async function testConnection() {
-  const [rows] = await db.execute("SELECT * FROM guilds");
-
-  console.log(rows);
-}
-
-testConnection().catch(console.error);
