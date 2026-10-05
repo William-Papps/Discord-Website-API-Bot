@@ -10,6 +10,8 @@ const {
 const registerCommands = require("./commands/registerCommands");
 const diceCommand = require("./commands/dice");
 const renameCommand = require("./commands/rename");
+const getChannels = require("../bot/commands/getChannels");
+const startApi = require("../api/server");
 
 const bot = new Client({
   intents: [
@@ -23,6 +25,8 @@ registerCommands();
 
 bot.once(Events.ClientReady, (readyBot) => {
   console.log(`${readyBot.user.tag} is online!`);
+
+  startApi(readyBot);
 });
 
 bot.on(Events.InteractionCreate, async (interaction) => {

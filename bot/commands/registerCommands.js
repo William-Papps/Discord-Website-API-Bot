@@ -49,11 +49,7 @@ const renameCommand = new SlashCommandBuilder()
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
 async function getCommands() {
-  const commands = [
-    helloCommand.toJSON(),
-    aboutCommand.toJSON(),
-    renameCommand.toJSON(),
-  ];
+  const commands = [helloCommand.toJSON(), aboutCommand.toJSON()];
 
   const [rows] = await db.execute(
     "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name = ?",
@@ -62,6 +58,15 @@ async function getCommands() {
 
   if (rows.length > 0 && rows[0].enabled === 1) {
     commands.push(diceCommand.toJSON());
+  }
+
+  const [renameRows] = await db.execute(
+    "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name = ?",
+    [process.env.GUILD_ID, "rename-channel"],
+  );
+
+  if (renameRows.length > 0 && renameRows[0].enabled === 1) {
+    commands.push(renameCommand.toJSON());
   }
 
   return commands;

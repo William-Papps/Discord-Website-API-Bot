@@ -51,4 +51,30 @@ diceToggle.addEventListener("click", async () => {
   }
 });
 
+async function loadChannels() {
+  try {
+    const response = await fetch("http://localhost:3000/api/channels");
+
+    if (!response.ok) {
+      throw new Error("Could not load channels");
+    }
+
+    const channels = await response.json();
+
+    const dropdown = document.getElementById("channelSelect");
+
+    for (const channel of channels) {
+      const option = document.createElement("option");
+
+      option.value = channel.id;
+      option.textContent = channel.name;
+
+      dropdown.appendChild(option);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+loadChannels();
 loadDiceStatus();

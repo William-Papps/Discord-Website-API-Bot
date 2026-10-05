@@ -8,6 +8,8 @@ const registerCommands = require("../bot/commands/registerCommands");
 
 const db = require("../database/db");
 
+const getChannels = require("../bot/commands/getChannels");
+
 const app = express();
 
 app.use(cors());
@@ -65,6 +67,24 @@ app.post("/api/commands/:commandName", async (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("API running on http://localhost:3000");
-});
+function startApi(bot) {
+  app.get("/api/channels", async (req, res) => {
+    try {
+      const channels = await getChannels(bot);
+
+      res.json(channels);
+    } catch (error) {
+      console.error(error);
+
+      res.status(500).json({
+        error: "Could not load channels.",
+      });
+    }
+  });
+
+  app.listen(3000, () => {
+    console.log("API running on http://localhost:3000");
+  });
+}
+
+module.exports = startApi;
