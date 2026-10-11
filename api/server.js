@@ -2,8 +2,6 @@ const express = require("express");
 
 const cors = require("cors");
 
-const commandSettings = require("../config/commandSettings");
-
 const registerCommands = require("../bot/commands/registerCommands");
 
 const db = require("../database/db");
@@ -19,7 +17,10 @@ app.get("/api/commands/:commandName", async (req, res) => {
   const commandName = req.params.commandName;
 
   const [rows] = await db.execute(
-    "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name =?",
+    `SELECT gc.enabled
+ FROM guild_commands AS gc
+ JOIN commands AS c ON c.command_id = gc.command_id
+ WHERE gc.guild_id = ? AND c.command_name = ?`,
     [process.env.GUILD_ID, commandName],
   );
 
@@ -45,7 +46,10 @@ app.post("/api/commands/:commandName", async (req, res) => {
   }
 
   const [rows] = await db.execute(
-    "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name =?",
+    `SELECT gc.enabled
+ FROM guild_commands AS gc
+ JOIN commands AS c ON c.command_id = gc.command_id
+ WHERE gc.guild_id = ? AND c.command_name = ?`,
     [process.env.GUILD_ID, commandName],
   );
 
@@ -56,7 +60,10 @@ app.post("/api/commands/:commandName", async (req, res) => {
   }
 
   await db.execute(
-    "UPDATE command_settings SET enabled = ? WHERE guild_id = ? and command_name = ?",
+    `UPDATE guild_commands AS gc
+   JOIN commands AS c ON c.command_id = gc.command_id
+   SET gc.enabled = ?
+   WHERE gc.guild_id = ? AND c.command_name = ?`,
     [enabled, process.env.GUILD_ID, commandName],
   );
 

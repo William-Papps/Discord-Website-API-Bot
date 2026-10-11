@@ -49,27 +49,21 @@ const renameCommand = new SlashCommandBuilder()
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
 async function getCommands() {
-  const commands = [helloCommand.toJSON(), aboutCommand.toJSON()];
-
   const [rows] = await db.execute(
-    "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name = ?",
-    [process.env.GUILD_ID, "dice"],
+    `SELECT c.command_name
+     FROM guild_commands AS gc
+     JOIN commands AS c ON c.command_id = gc.command_id
+     WHERE gc.guild_id = ? AND gc.enabled = 1`,
+    [process.env.GUILD_ID],
   );
 
-  if (rows.length > 0 && rows[0].enabled === 1) {
-    commands.push(diceCommand.toJSON());
-  }
+  const enabledNames = new Set(rows.map((row) => row.command_name));
 
-  const [renameRows] = await db.execute(
-    "SELECT enabled FROM command_settings WHERE guild_id = ? AND command_name = ?",
-    [process.env.GUILD_ID, "rename-channel"],
-  );
+  const allCommands = [helloCommand, aboutCommand, diceCommand, renameCommand];
 
-  if (renameRows.length > 0 && renameRows[0].enabled === 1) {
-    commands.push(renameCommand.toJSON());
-  }
-
-  return commands;
+  return allCommands
+    .map((command) => command.toJSON())
+    .filter((command) => enabledNames.has(command.name));
 }
 
 async function registerCommands() {
