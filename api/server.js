@@ -23,7 +23,7 @@ app.get("/api/commands/:commandName", async (req, res) => {
     [process.env.GUILD_ID, commandName],
   );
 
-  if (rows.legenth === 0) {
+  if (rows.length === 0) {
     return res.status(404).json({
       error: "Command setting not found.",
     });
