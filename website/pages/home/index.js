@@ -107,31 +107,35 @@ coinflipToggle.addEventListener("click", async () => {
     coinflipToggle.disabled = false;
   }
 });
+// Channel rename
 
 async function loadChannels() {
-  try {
-    const response = await fetch("http://localhost:3000/api/channels");
+  const response = await fetch("http://localhost:3000/api/channels");
+  const channels = await response.json();
 
-    if (!response.ok) {
-      throw new Error("Could not load channels");
-    }
+  channelSelect.innerHTML = '<option value="">Select a channel...</option>';
 
-    const channels = await response.json();
+  for (const channel of channels) {
+    const option = document.createElement("option");
 
-    const dropdown = document.getElementById("channelSelect");
+    option.value = channel.id;
+    option.textContent = channel.name;
 
-    for (const channel of channels) {
-      const option = document.createElement("option");
-
-      option.value = channel.id;
-      option.textContent = channel.name;
-
-      dropdown.appendChild(option);
-    }
-  } catch (error) {
-    console.error(error);
+    channelSelect.appendChild(option);
   }
 }
+
+const channelSelect = document.querySelector("#channelSelect");
+const channelName = document.querySelector("#channelName");
+const submitButton = document.querySelector("#submitButton");
+
+submitButton.addEventListener("click", () => {
+  const selectedChannelId = channelSelect.value;
+  const newChannelName = channelName.value.trim();
+
+  console.log("Channel ID:", selectedChannelId);
+  console.log("New name:", newChannelName);
+});
 
 loadChannels();
 loadDiceStatus();

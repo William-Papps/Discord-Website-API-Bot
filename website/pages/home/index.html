@@ -6,11 +6,20 @@
 
 <label for="channelSelect">Choose a channel:</label>
 
-<select id="channelSelect">
-  <option value="">Select a channel...</option>
-</select>
 <section class="coinflip">
   <button id="coinflipToggle">Turn Coinflip Off</button>
   <p id="coinflipStatus">Coinflip command is ON</p>
 </section>
+
+<section class="renameChannel">
+  <select id="channelSelect">
+    <option value="">Select a channel...</option>
+  </select>
+
+  <label for="channelName">New channel name:</label>
+  <input id="channelName" type="text" />
+
+  <button id="submitButton" type="button">Rename Channel</button>
+</section>
+
 <script src="index.js"></script>
