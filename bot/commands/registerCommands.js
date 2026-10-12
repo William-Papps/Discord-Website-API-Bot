@@ -46,6 +46,10 @@ const renameCommand = new SlashCommandBuilder()
       .setRequired(true),
   );
 
+const coinflipCommand = new SlashCommandBuilder()
+  .setName("coinflip")
+  .setDescription("Flip a coin and get either heads or tails");
+
 const rest = new REST({ version: "10" }).setToken(process.env.DISCORD_TOKEN);
 
 async function getCommands() {
@@ -59,7 +63,13 @@ async function getCommands() {
 
   const enabledNames = new Set(rows.map((row) => row.command_name));
 
-  const allCommands = [helloCommand, aboutCommand, diceCommand, renameCommand];
+  const allCommands = [
+    helloCommand,
+    aboutCommand,
+    diceCommand,
+    renameCommand,
+    coinflipCommand,
+  ];
 
   return allCommands
     .map((command) => command.toJSON())

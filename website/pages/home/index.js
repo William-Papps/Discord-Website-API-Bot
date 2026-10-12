@@ -51,6 +51,63 @@ diceToggle.addEventListener("click", async () => {
   }
 });
 
+// Coinflip
+const coinflipStatus = document.getElementById("coinflipStatus");
+const coinflipToggle = document.getElementById("coinflipToggle");
+
+let coinflipEnabled;
+
+function updateCoinflipDisplay() {
+  if (coinflipEnabled) {
+    coinflipStatus.textContent = "Coinflip command is ON";
+    coinflipToggle.textContent = "Turn Coinflip Off";
+  } else {
+    coinflipStatus.textContent = "Coinflip command is OFF";
+    coinflipToggle.textContent = "Turn Coinflip On";
+  }
+}
+
+async function loadCoinflipStatus() {
+  const response = await fetch("http://localhost:3000/api/commands/coinflip");
+
+  const data = await response.json();
+
+  coinflipEnabled = data.enabled;
+
+  updateCoinflipDisplay();
+}
+
+coinflipToggle.addEventListener("click", async () => {
+  coinflipToggle.disabled = true;
+
+  try {
+    coinflipEnabled = !coinflipEnabled;
+
+    const response = await fetch(
+      "http://localhost:3000/api/commands/coinflip",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          enabled: coinflipEnabled,
+        }),
+      },
+    );
+
+    const data = await response.json();
+
+    coinflipEnabled = data.enabled;
+
+    updateCoinflipDisplay();
+  } finally {
+    coinflipToggle.disabled = false;
+  }
+});
+
 async function loadChannels() {
   try {
     const response = await fetch("http://localhost:3000/api/channels");
@@ -78,3 +135,4 @@ async function loadChannels() {
 
 loadChannels();
 loadDiceStatus();
+loadCoinflipStatus();

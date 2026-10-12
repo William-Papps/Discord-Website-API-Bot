@@ -12,6 +12,7 @@ const diceCommand = require("./commands/dice");
 const renameCommand = require("./commands/rename");
 const getChannels = require("../bot/commands/getChannels");
 const startApi = require("../api/server");
+const coinflipCommand = require("./commands/coinflip");
 
 const bot = new Client({
   intents: [
@@ -40,6 +41,8 @@ bot.on(Events.InteractionCreate, async (interaction) => {
     await diceCommand(interaction);
   } else if (interaction.commandName === "rename-channel") {
     await renameCommand(interaction);
+  } else if (interaction.commandName === "coinflip") {
+    await coinflipCommand(interaction);
   }
 });
 
