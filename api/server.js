@@ -89,6 +89,20 @@ function startApi(bot) {
     }
   });
 
+  app.post("/api/channels/rename", async (req, res) => {
+    const channelId = req.body.channelId;
+    const newName = req.body.newName;
+
+    const guild = await bot.guilds.fetch(process.env.GUILD_ID);
+    const channel = await guild.channels.fetch(channelId);
+
+    await channel.setName(newName);
+
+    res.json({
+      message: "Channel renamed",
+    });
+  });
+
   app.listen(3000, () => {
     console.log("API running on http://localhost:3000");
   });

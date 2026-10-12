@@ -129,12 +129,25 @@ const channelSelect = document.querySelector("#channelSelect");
 const channelName = document.querySelector("#channelName");
 const submitButton = document.querySelector("#submitButton");
 
-submitButton.addEventListener("click", () => {
+submitButton.addEventListener("click", async () => {
   const selectedChannelId = channelSelect.value;
   const newChannelName = channelName.value.trim();
 
-  console.log("Channel ID:", selectedChannelId);
-  console.log("New name:", newChannelName);
+  const response = await fetch("http://localhost:3000/api/channels/rename", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      channelId: selectedChannelId,
+      newName: newChannelName,
+    }),
+  });
+
+  const data = await response.json();
+  console.log(data.message);
+
+  await loadChannels();
 });
 
 loadChannels();
